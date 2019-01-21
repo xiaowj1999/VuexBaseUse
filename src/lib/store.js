@@ -10,7 +10,7 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
       //购物车数据
-      cartData: {}
+      cartData: JSON.parse(window.localStorage.getItem("cartData"))||{},
   },
   //如果数据需要进行计算才可以获取 需要使用Vuex的计算属性
   getters:{
@@ -41,12 +41,19 @@ const store = new Vuex.Store({
             
         }
         
+    },
+    //当删除数据时 同时本地仓库中的数据也要进行同步更新
+    removeCart(state,data){
+        // console.log(data);
+        //vue提供了一个delete方法用来移除 对象中的属性 让Vue放弃监听
+        Vue.delete(state.cartData,data.name)
+        
     }
   }
 });
-// //当关闭浏览器时 保存数据
-// window.onbeforeunload = function () {
-//     window.localStorage.setItem("cartData",JSON.stringify(store.state.cartData))
-// }
+//当关闭浏览器时 保存数据
+window.onbeforeunload = function () {
+    window.localStorage.setItem("cartData",JSON.stringify(store.state.cartData))
+}
 
 export default store;
